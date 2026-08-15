@@ -1,0 +1,4 @@
+# Adds the full-skin manager to the Web client roster.
+- insert:
+    - id: dsh-skin-switch
+      name: 'dsh-skin-switch'
