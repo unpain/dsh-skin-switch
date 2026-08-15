@@ -2,25 +2,41 @@
 
 A full-skin manager for DeepSeek Harness Web. It adds `Settings > Skins`, owns one full skin at a time, persists the selection, and restores the previous skin when activation fails.
 
-> This repository is currently private. Installation requires GitHub access.
+> This repository is private. Installation requires an authorized GitHub account and working Git credentials.
 
 ## Requirements
 
 - DeepSeek Harness Web `0.1.0-rc.6`
-- GitHub access to this private repository from the account used to install the plugin
+- Git access to this private repository
 
-## Install
+If this machine is not authenticated yet, GitHub CLI can configure Git once:
+
+```sh
+gh auth login
+gh auth setup-git
+```
+
+`git ls-remote https://github.com/unpain/dsh-skin-switch.git HEAD` should succeed before installation.
+
+## One-command install
 
 ```sh
 dsh plugin --profile web add https://github.com/unpain/dsh-skin-switch.git
 ```
 
-Restart DSH Web, then open `Settings > Skins`.
+The install command adds both the host and browser bundles. pnpm may report missing DSH or React peer dependencies because the Web profile supplies them through its base bundles; the installation succeeded when the command exits with status 0 and lists `dsh-skin-switch` as added.
 
-The manager always provides `DSH Default`. Additional cards come from either source:
+Restart DSH Web, then open `Settings > Skins`. A manager-only installation shows `DSH Default`.
 
-- compatible full-skin packages that call `ctx.skinManager.register()`;
-- an installed `@linxin666/dsh-skins` collection, including installations through `@linxin666/dsh-web-ui-all`.
+## Add skin cards
+
+Compatible full-skin plugins appear automatically when they call `ctx.skinManager.register()`. To add the ten skins from the `dsh-web-ui` collection without the rest of its UI bundle:
+
+```sh
+dsh plugin --profile web add @linxin666/dsh-skins
+```
+
+Restart DSH Web after installation. Installing `@linxin666/dsh-web-ui-all` also exposes the same collection, together with its other UI plugins.
 
 Collection skins are discovered from their `skin.json` files. Selection delegates to the installed skin-center API, waits until the DSH boot manifest contains the requested skin, and then reloads the page. Switching between a registered skin and a collection skin unloads the current backend first, so their DOM and styles never overlap. The standalone `dsh-skin` executable is not required.
 
