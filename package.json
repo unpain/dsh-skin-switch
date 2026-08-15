@@ -36,7 +36,8 @@
   },
   "scripts": {
     "build": "tsdown",
-    "test": "vitest run"
+    "test": "pnpm test:types && vitest run",
+    "test:types": "tsc -p tests/types/tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
@@ -59,6 +60,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tsdown": "0.22.14",
+    "typescript": "5.9.3",
     "vitest": "4.1.10"
   }
 }
