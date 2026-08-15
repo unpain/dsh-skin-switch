@@ -10,6 +10,8 @@ import { DshWebUiHttpGateway } from './collections/dsh-web-ui-gateway.ts'
 import { en, SKIN_SETTINGS_NS, type SkinSettingsKey, zh } from './locales.ts'
 import { DEFAULT_SKIN_ID, SKIN_STORAGE_KEY, SkinManager } from './manager.ts'
 import { SkinSettingsSection } from './settings/SkinSettingsSection.tsx'
+import './settings/SkinNavIcon.module.css'
+import { installSkinNavIcon } from './settings/SkinNavIcon.ts'
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
@@ -68,6 +70,10 @@ export function apply(ctx: Context): void {
     'skin-manager: settings dictionaries',
   )
   const t = ctx.locale.bind(SKIN_SETTINGS_NS)
+  ctx.effect(
+    () => installSkinNavIcon([zh.nav, en.nav]),
+    'skin-manager: settings navigation icon',
+  )
   ctx.slots.inject('settings.section', () => ctx.slots.register({
     name: 'settings.section',
     id: 'skins',

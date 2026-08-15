@@ -1,0 +1,14 @@
+nav button[data-dsh-skin-nav-icon] > svg:first-child {
+  display: none;
+}
+
+nav button[data-dsh-skin-nav-icon]::before {
+  --dsh-skin-palette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a10 10 0 0 0 0 20h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h2c4.4 0 8-3.6 8-8 0-2.8-4.5-5-10-5Z'/%3E%3Ccircle cx='7.5' cy='10.5' r='1' fill='black' stroke='none'/%3E%3Ccircle cx='9' cy='6.5' r='1' fill='black' stroke='none'/%3E%3Ccircle cx='14' cy='6' r='1' fill='black' stroke='none'/%3E%3Ccircle cx='17.5' cy='9' r='1' fill='black' stroke='none'/%3E%3C/svg%3E");
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  content: '';
+  background: currentcolor;
+  mask: var(--dsh-skin-palette) center / contain no-repeat;
+  -webkit-mask: var(--dsh-skin-palette) center / contain no-repeat;
+}

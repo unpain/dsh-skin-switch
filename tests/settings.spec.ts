@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createElement } from 'react'
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
@@ -11,11 +11,14 @@ import { SkinSettingsSection } from '../src/client/settings/SkinSettingsSection.
 
 const registrations: Array<{ options: Record<string, unknown>; component: unknown }> = []
 const provided = new Map<string, unknown>()
+const effects: Array<() => void> = []
 
 function testContext(): Context {
   return {
     effect(factory: () => unknown): unknown {
-      return factory()
+      const result = factory()
+      if (typeof result === 'function') effects.push(result as () => void)
+      return result
     },
     locale: {
       bind: () => (key: string) => key,
@@ -52,11 +55,16 @@ function renderSettings(dictionary: Record<SkinSettingsKey, string>): string {
 
 beforeEach(() => {
   registrations.length = 0
+  effects.length = 0
   provided.clear()
   document.body.innerHTML = ''
   localStorage.clear()
   Reflect.deleteProperty(window, '__DSH_BOOT__')
   vi.unstubAllGlobals()
+})
+
+afterEach(() => {
+  for (const dispose of effects.splice(0)) dispose()
 })
 
 describe('skin settings client wiring', () => {
@@ -113,6 +121,23 @@ describe('skin settings client wiring', () => {
 
     expect(document.querySelector('[data-dsh-skin-switcher-root]')).toBeNull()
     expect(document.body.children).toHaveLength(0)
+  })
+
+  it('marks the Skins navigation button and removes the marker on disposal', async () => {
+    apply(testContext())
+    document.body.innerHTML = [
+      '<button><svg></svg><span>Skins</span></button>',
+      '<nav><button><svg></svg><span>Skins</span></button></nav>',
+    ].join('')
+    const navButton = document.querySelector('nav button')
+
+    await vi.waitFor(() => {
+      expect(navButton?.hasAttribute('data-dsh-skin-nav-icon')).toBe(true)
+    })
+    expect(document.querySelector('body > button')?.hasAttribute('data-dsh-skin-nav-icon')).toBe(false)
+
+    for (const dispose of effects.splice(0)) dispose()
+    expect(navButton?.hasAttribute('data-dsh-skin-nav-icon')).toBe(false)
   })
 
   it.each([
