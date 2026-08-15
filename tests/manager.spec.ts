@@ -100,6 +100,25 @@ describe('SkinManager', () => {
     expect(manager.getSnapshot().selectedId).toBe('maid-atelier')
   })
 
+  it('ignores a persisted restore queued after a same-tick default selection', async () => {
+    const storage = new MemoryStorage()
+    const events: string[] = []
+    storage.setItem('dsh-skin-manager:selected', 'maid-atelier')
+    const manager = new SkinManager(storage)
+
+    const selection = manager.select(DEFAULT_SKIN_ID)
+    manager.register(skin('maid-atelier', events))
+    await selection
+    await manager.whenIdle()
+
+    expect(events).toEqual([])
+    expect(storage.getItem('dsh-skin-manager:selected')).toBe(DEFAULT_SKIN_ID)
+    expect(manager.getSnapshot()).toMatchObject({
+      selectedId: DEFAULT_SKIN_ID,
+      status: 'idle',
+    })
+  })
+
   it('publishes stable snapshots when registry or selection changes', async () => {
     const manager = new SkinManager(new MemoryStorage())
     const listener = vi.fn()

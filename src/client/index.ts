@@ -37,7 +37,7 @@ export function apply(ctx: Context): void {
   }, SkinSettingsSection))
 }
 
-export const inject = ['slots', 'locale']
+export const inject: string[] = ['slots', 'locale']
 
 export {
   DEFAULT_SKIN_ID,

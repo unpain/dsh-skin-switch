@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import type { SkinManager, SkinMetadata } from '../manager.ts'
+import { DEFAULT_SKIN_ID, type SkinManager, type SkinMetadata } from '../manager.ts'
 import type { SkinSettingsKey } from '../locales.ts'
 import styles from './SkinSettingsSection.module.css'
 
@@ -43,13 +43,16 @@ function SkinPreview({ skin }: { skin: SkinMetadata }): React.JSX.Element {
 }
 
 function SkinCardBody({ selected, skin, t }: Pick<CardProps, 'selected' | 'skin' | 't'>): React.JSX.Element {
+  const isDefault = skin.id === DEFAULT_SKIN_ID
+  const name = isDefault ? t('defaultName') : skin.name
+  const description = isDefault ? t('defaultDescription') : skin.description
   return (
     <div className={styles.cardBody}>
       <div className={styles.cardHeading}>
-        <span className={styles.cardName}>{skin.name}</span>
+        <span className={styles.cardName}>{name}</span>
         {selected && <SelectedIcon />}
       </div>
-      <span className={styles.cardDescription}>{skin.description}</span>
+      <span className={styles.cardDescription}>{description}</span>
       {skin.author !== undefined && <span className={styles.author}>{t('author', { name: skin.author })}</span>}
       {selected && <span className={styles.status}>{t('selected')}</span>}
     </div>

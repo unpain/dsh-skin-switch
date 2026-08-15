@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createElement } from 'react'
+import { flushSync } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import type { Context } from '@deepseek-ai/cordis'
 import { apply, inject } from '../src/client/index.ts'
+import { en, type SkinSettingsKey, zh } from '../src/client/locales.ts'
+import { SkinManager } from '../src/client/manager.ts'
+import { SkinSettingsSection } from '../src/client/settings/SkinSettingsSection.tsx'
 
 const registrations: Array<{ options: Record<string, unknown>; component: unknown }> = []
 const provided = new Map<string, unknown>()
@@ -28,6 +34,20 @@ function testContext(): Context {
       },
     },
   } as unknown as Context
+}
+
+function renderSettings(dictionary: Record<SkinSettingsKey, string>): string {
+  const container = document.createElement('div')
+  document.body.append(container)
+  const root = createRoot(container)
+  const t = (key: SkinSettingsKey): string => dictionary[key]
+  flushSync(() => root.render(createElement(SkinSettingsSection, {
+    manager: new SkinManager(localStorage),
+    t,
+  })))
+  const rendered = container.textContent ?? ''
+  root.unmount()
+  return rendered
 }
 
 beforeEach(() => {
@@ -57,5 +77,16 @@ describe('skin settings client wiring', () => {
 
     expect(document.querySelector('[data-dsh-skin-switcher-root]')).toBeNull()
     expect(document.body.children).toHaveLength(0)
+  })
+
+  it.each([
+    [zh, 'DSH 默认', '恢复 DeepSeek Harness 原生界面。', 'DSH Default'],
+    [en, 'DSH Default', 'Restore the native DeepSeek Harness interface.', 'DSH 默认'],
+  ] as const)('renders localized default metadata', (dictionary, name, description, otherName) => {
+    const rendered = renderSettings(dictionary)
+
+    expect(rendered).toContain(name)
+    expect(rendered).toContain(description)
+    expect(rendered).not.toContain(otherName)
   })
 })

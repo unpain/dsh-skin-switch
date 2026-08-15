@@ -70,7 +70,7 @@ export class SkinManager {
     this.definitions.set(definition.id, definition)
     this.publishRegistry()
     if (this.desiredId.current === definition.id) {
-      void this.enqueue(definition.id, false).catch(() => undefined)
+      void this.enqueueRestore(definition).catch(() => undefined)
     }
     return () => this.enqueueUnregister(definition)
   }
@@ -107,6 +107,18 @@ export class SkinManager {
 
   private enqueue(id: string, persist: boolean): Promise<void> {
     const request = this.pending.then(() => this.transition(id, persist))
+    this.pending = request.catch(() => undefined)
+    return request
+  }
+
+  private enqueueRestore(definition: SkinDefinition): Promise<void> {
+    const request = this.pending.then(() => {
+      if (
+        this.desiredId.current !== definition.id
+        || this.definitions.get(definition.id) !== definition
+      ) return
+      return this.transition(definition.id, false)
+    })
     this.pending = request.catch(() => undefined)
     return request
   }

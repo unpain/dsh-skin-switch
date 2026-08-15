@@ -101,4 +101,14 @@ const clientConfig: UserConfig = {
   },
 }
 
-export default [nodeConfig, clientConfig]
+const clientDtsConfig: UserConfig = {
+  name: `${ID}/client-types`,
+  entry: { client: 'src/client/index.ts' },
+  outDir: 'lib',
+  format: 'esm',
+  fixedExtension: false,
+  dts: { oxc: true, emitDtsOnly: true },
+  clean: false,
+}
+
+export default [nodeConfig, clientConfig, clientDtsConfig]

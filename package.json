@@ -6,13 +6,17 @@
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
-    "./client": "./lib/client.js",
+    "./client": {
+      "types": "./lib/client.d.ts",
+      "default": "./lib/client.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "lib/index.js",
     "lib/client.js",
     "lib/client.js.map",
+    "lib/client.d.ts",
     "cordis.patch.yml",
     "README.md",
     "LICENSE"
