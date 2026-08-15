@@ -77,6 +77,56 @@ declare class SkinManager {
   private publish;
 }
 //#endregion
+//#region src/client/collections/dsh-web-ui.d.ts
+interface DshWebUiSkin {
+  id: string;
+  name: string;
+  nameEn?: string;
+  description: string;
+  author?: string;
+  accent?: string;
+  order?: number;
+}
+interface DshWebUiCollectionGateway {
+  list(): Promise<readonly DshWebUiSkin[]>;
+  apply(id: string | null): Promise<void>;
+  reload(): void;
+}
+declare function dshWebUiSelectionId(id: string): string;
+declare function activeDshWebUiSkinId(entries: readonly {
+  id: string;
+}[]): string | null;
+/** Coordinates page-local skins with boot-graph skins without ever mounting both. */
+declare class DshWebUiCollectionAdapter {
+  private readonly manager;
+  private readonly storage;
+  private readonly gateway;
+  private readonly listeners;
+  private externalSkins;
+  private activeId;
+  private status;
+  private error;
+  private revision;
+  private snapshot;
+  private pending;
+  constructor(manager: SkinManager, storage: SkinSelectionStorage, gateway: DshWebUiCollectionGateway, activeId: string | null);
+  initialize(): Promise<void>;
+  getSnapshot: () => SkinSnapshot;
+  subscribe: (listener: () => void) => (() => void);
+  register(definition: SkinDefinition): () => Promise<void>;
+  whenIdle(): Promise<void>;
+  select(id: string): Promise<void>;
+  private transition;
+  private selectExternal;
+  private selectLocalAfterUnload;
+  private localTarget;
+  private beginSwitch;
+  private finishSwitch;
+  private fail;
+  private composeSnapshot;
+  private publish;
+}
+//#endregion
 //#region src/client/index.d.ts
 declare module "@deepseek-ai/cordis" {
   interface Context {
@@ -92,4 +142,4 @@ declare module "@deepseek-ai/dsh-client-ui-slots" {
 declare function apply(ctx: Context): void;
 declare const inject: string[];
 //#endregion
-export { DEFAULT_SKIN_ID, SKIN_STORAGE_KEY, type SkinActivator, type SkinDefinition, type SkinDisposer, SkinManager, type SkinMetadata, type SkinSelectionStorage, type SkinSnapshot, type SkinStatus, apply, inject };
+export { DEFAULT_SKIN_ID, DshWebUiCollectionAdapter, type DshWebUiCollectionGateway, type DshWebUiSkin, SKIN_STORAGE_KEY, type SkinActivator, type SkinDefinition, type SkinDisposer, SkinManager, type SkinMetadata, type SkinSelectionStorage, type SkinSnapshot, type SkinStatus, activeDshWebUiSkinId, apply, dshWebUiSelectionId, inject };

@@ -55,6 +55,8 @@ beforeEach(() => {
   provided.clear()
   document.body.innerHTML = ''
   localStorage.clear()
+  Reflect.deleteProperty(window, '__DSH_BOOT__')
+  vi.unstubAllGlobals()
 })
 
 describe('skin settings client wiring', () => {
@@ -64,12 +66,46 @@ describe('skin settings client wiring', () => {
     expect(inject).toEqual(['slots', 'locale'])
     expect(provided.has('skinManager')).toBe(true)
     expect(registrations).toHaveLength(1)
+    const sectionInject = registrations[0]?.options.inject as () => { manager: unknown }
+    expect(provided.get('skinManager')).toBe(sectionInject().manager)
     expect(registrations[0]?.options).toMatchObject({
       name: 'settings.section',
       id: 'skins',
       order: 12,
       locale: 'settings.skins',
     })
+  })
+
+  it('adopts the boot-active collection skin before local restore can overlap it', async () => {
+    localStorage.setItem('dsh-skin-manager:selected', 'maid-atelier')
+    Object.defineProperty(window, '__DSH_BOOT__', {
+      configurable: true,
+      value: {
+        entries: [
+          { id: '@linxin666/dsh-client-ui-skin-center' },
+          { id: '@linxin666/dsh-client-ui-skin-minecraft' },
+        ],
+      },
+    })
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({
+      ok: true,
+      skins: [{
+        id: 'minecraft',
+        name: '方块世界',
+        description: 'Voxel',
+        package: '@linxin666/dsh-client-ui-skin-minecraft',
+      }],
+    }), { status: 200 })))
+
+    apply(testContext())
+    const injectSection = registrations[0]?.options.inject as () => { manager: SkinManager }
+    const view = injectSection().manager
+    await vi.waitFor(() => {
+      expect(view.getSnapshot().skins).toHaveLength(2)
+    })
+
+    expect(localStorage.getItem('dsh-skin-manager:selected')).toBe('default')
+    expect(view.getSnapshot().selectedId).toBe('dsh-web-ui:minecraft')
   })
 
   it('does not mount the legacy floating switcher', () => {

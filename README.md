@@ -17,9 +17,12 @@ dsh plugin --profile web add https://github.com/unpain/dsh-skin-switch.git
 
 Restart DSH Web, then open `Settings > Skins`.
 
-The manager alone provides only `DSH Default`. Additional cards appear when compatible full-skin packages register through `ctx.skinManager.register()`.
+The manager always provides `DSH Default`. Additional cards come from either source:
 
-Select a card in `Settings > Skins` to activate that full skin. The manager keeps only one registered skin active, persists a successful selection, and restores the previously active skin if the new skin cannot be activated.
+- compatible full-skin packages that call `ctx.skinManager.register()`;
+- an installed `@linxin666/dsh-skins` collection, including installations through `@linxin666/dsh-web-ui-all`.
+
+Collection skins are discovered from their `skin.json` files. Selection delegates to the installed skin-center API, waits until the DSH boot manifest contains the requested skin, and then reloads the page. Switching between a registered skin and a collection skin unloads the current backend first, so their DOM and styles never overlap. The standalone `dsh-skin` executable is not required.
 
 ## Register a full skin
 
