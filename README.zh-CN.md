@@ -4,21 +4,9 @@
 
 DeepSeek Harness Web 的完整皮肤管理器。它会在 `设置 > 皮肤` 中加入皮肤列表，同一时间只启用一套完整皮肤，并保存当前选择。切换失败时，管理器会恢复之前使用的皮肤。
 
-> 本仓库为私有仓库。安装前需要确认当前 GitHub 账号有访问权限，并且 Git 凭据已经配置好。
-
 ## 使用要求
 
 - DeepSeek Harness Web `0.1.0-rc.6`
-- Git 可以访问本私有仓库
-
-如果这台机器尚未登录 GitHub，可以用 GitHub CLI 配置：
-
-```sh
-gh auth login
-gh auth setup-git
-```
-
-安装前，`git ls-remote https://github.com/unpain/dsh-skin-switch.git HEAD` 应当能正常返回提交信息。
 
 ## 一条命令安装
 

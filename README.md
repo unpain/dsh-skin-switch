@@ -4,21 +4,9 @@ English | [简体中文](README.zh-CN.md)
 
 A full-skin manager for DeepSeek Harness Web. It adds `Settings > Skins`, owns one full skin at a time, persists the selection, and restores the previous skin when activation fails.
 
-> This repository is private. Installation requires an authorized GitHub account and working Git credentials.
-
 ## Requirements
 
 - DeepSeek Harness Web `0.1.0-rc.6`
-- Git access to this private repository
-
-If this machine is not authenticated yet, GitHub CLI can configure Git once:
-
-```sh
-gh auth login
-gh auth setup-git
-```
-
-`git ls-remote https://github.com/unpain/dsh-skin-switch.git HEAD` should succeed before installation.
 
 ## One-command install
 
