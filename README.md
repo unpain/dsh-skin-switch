@@ -1,3 +1,5 @@
+English | [简体中文](README.zh-CN.md)
+
 # dsh-skin-switch
 
 A full-skin manager for DeepSeek Harness Web. It adds `Settings > Skins`, owns one full skin at a time, persists the selection, and restores the previous skin when activation fails.

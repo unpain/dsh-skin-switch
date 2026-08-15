@@ -6,6 +6,8 @@ const manifest = JSON.parse(readFileSync(resolve(process.cwd(), 'package.json'),
 const patch = readFileSync(resolve(process.cwd(), 'cordis.patch.yml'), 'utf8')
 
 const clientDeclarationPath = resolve(process.cwd(), 'lib/client.d.ts')
+const englishReadme = readFileSync(resolve(process.cwd(), 'README.md'), 'utf8')
+const chineseReadme = readFileSync(resolve(process.cwd(), 'README.zh-CN.md'), 'utf8')
 
 describe('installable package contract', () => {
   it('uses the public Git package identity and ships runtime artifacts', () => {
@@ -18,6 +20,7 @@ describe('installable package contract', () => {
       'lib/client.d.ts',
       'cordis.patch.yml',
       'README.md',
+      'README.zh-CN.md',
       'LICENSE',
     ])
     expect(manifest.dsh.client.inject).toEqual([
@@ -27,6 +30,22 @@ describe('installable package contract', () => {
     ])
     expect(patch).toContain("id: dsh-skin-switch")
     expect(patch).toContain("name: 'dsh-skin-switch'")
+  })
+
+  it('ships linked English and Simplified Chinese documentation', () => {
+    expect(manifest.files).toContain('README.md')
+    expect(manifest.files).toContain('README.zh-CN.md')
+    expect(englishReadme).toContain('English | [简体中文](README.zh-CN.md)')
+    expect(chineseReadme).toContain('[English](README.md) | 简体中文')
+
+    const commands = [
+      'dsh plugin --profile web add https://github.com/unpain/dsh-skin-switch.git',
+      'dsh plugin --profile web add @linxin666/dsh-skins',
+    ]
+    for (const command of commands) {
+      expect(englishReadme).toContain(command)
+      expect(chineseReadme).toContain(command)
+    }
   })
 
   it('publishes the client runtime with generated public declarations', () => {
