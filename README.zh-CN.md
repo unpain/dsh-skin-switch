@@ -69,6 +69,10 @@ await unregister()
 
 `ctx.skinManager.register()` 返回一个异步注销函数。完整皮肤插件卸载时必须调用它，以便管理器移除卡片；如果该皮肤正在使用，管理器也会执行清理。
 
+## 相关项目
+
+如有兴趣，可体验作者开发的明日香 / EVA 二号机主题皮肤：[`dsh-skin-asuka`](https://github.com/unpain/dsh-skin-asuka)。
+
 ## 开发
 
 安装锁定版本的依赖，生成需要提交的浏览器端文件，然后运行测试：

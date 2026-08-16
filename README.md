@@ -69,6 +69,10 @@ await unregister()
 
 `ctx.skinManager.register()` returns an async unregister function. A full-skin package must call it during disposal so the manager can remove the card and clean up the active skin.
 
+## Related project
+
+If you're interested, try [`dsh-skin-asuka`](https://github.com/unpain/dsh-skin-asuka), an Asuka / EVA Unit-02 theme created by the same author.
+
 ## Development
 
 Install the locked dependencies, build the committed client artifacts, and run the test suite:
